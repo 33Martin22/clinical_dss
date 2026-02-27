@@ -1,4 +1,7 @@
 """components/alerts.py — Risk alert banners and clinical warning helpers."""
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import streamlit as st
 
 _CFG = {
@@ -15,7 +18,7 @@ def show_risk_alert(risk_level: str, message: str = "") -> None:
     getattr(st, kind)(text)
 
 
-def show_clinical_warnings(warnings: list[str]) -> None:
+def show_clinical_warnings(warnings: list) -> None:
     """Display soft clinical warnings inside a collapsible expander."""
     if warnings:
         with st.expander(
