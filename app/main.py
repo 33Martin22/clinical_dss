@@ -6,28 +6,28 @@ Application entry point.
 Local:            streamlit run app/main.py
 Streamlit Cloud:  Main file path = app/main.py
 """
+# ── Path setup — must be FIRST, before any local imports ──────────────────────
+# This ensures app/ is on sys.path whether running locally or on Streamlit Cloud.
 import sys
 import os
 
-# Add app/ to the Python path so every page can import modules directly.
-# This is set once here so no page ever needs sys.path.insert().
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+if _APP_DIR not in sys.path:
+    sys.path.insert(0, _APP_DIR)
 
+# ── Standard imports ───────────────────────────────────────────────────────────
 import streamlit as st
 
-from database import init_db
-from auth     import seed_defaults
-from utils    import global_css
-from components.navbar import render_navbar
-
-# Warm-up the Keras model at startup so the first assessment
-# does not appear to hang (TF takes 20-40 s on cold start).
-from risk_engine.ml_model import load_keras_model, load_scaler
+from database              import init_db
+from auth                  import seed_defaults
+from utils                 import global_css
+from components.navbar     import render_navbar
+from risk_engine.ml_model  import load_keras_model, load_scaler
 
 st.set_page_config(
-    page_title = "AI Clinical Decision Support",
-    page_icon  = "🏥",
-    layout     = "wide",
+    page_title            = "AI Clinical Decision Support",
+    page_icon             = "🏥",
+    layout                = "wide",
     initial_sidebar_state = "expanded",
 )
 
@@ -38,24 +38,21 @@ def _startup() -> bool:
     Run once per server process:
       1. Create / verify all PostgreSQL tables.
       2. Seed default admin + doctor accounts.
-      3. Pre-load the Keras model and scaler into memory.
-
-    Returns True so st.cache_resource can store the result.
+    Returns True so st.cache_resource stores the result.
     """
     init_db()
     seed_defaults()
     return True
 
 
-# ── Startup sequence ──────────────────────────────────────────────────────────
+# ── Startup ───────────────────────────────────────────────────────────────────
 _startup()
 
-# Pre-load model (shows spinner on first cold start)
+# Pre-warm Keras model (shows spinner; avoids freeze on first assessment)
 load_keras_model()
 load_scaler()
 
 global_css()
 render_navbar()
 
-# Redirect to landing page
 st.switch_page("pages/1_Landing.py")
