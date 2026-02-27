@@ -13,6 +13,9 @@ Model details (verified from H5 metadata):
   Output : {0: High, 1: Low, 2: Medium}  (alphabetical LabelEncoder)
   Scaler : MinMaxScaler on 6 numeric vitals
 """
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 import os
 import pickle
 import logging
