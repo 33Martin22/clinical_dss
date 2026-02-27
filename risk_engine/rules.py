@@ -11,6 +11,9 @@ NEWS2 reference:
   Royal College of Physicians. National Early Warning Score (NEWS) 2.
   London: RCP, 2017.
 """
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 
 
 def compute_rule_score(vitals: dict) -> tuple[int, list[str]]:
