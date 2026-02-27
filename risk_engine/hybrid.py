@@ -5,6 +5,9 @@ Combines the NEWS2 rule engine and the Keras ML model into a single
 hybrid decision.  When the two sources disagree, the higher risk is
 adopted — the conservative clinical choice.
 """
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from .rules    import compute_rule_score, score_to_risk
 from .ml_model import load_keras_model, load_scaler, predict, shap_explanation
 
