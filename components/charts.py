@@ -1,4 +1,7 @@
 """components/charts.py — Reusable Plotly chart components."""
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -77,12 +80,12 @@ def vitals_radar(vitals: dict) -> go.Figure:
     """Normalised radar chart of key vitals."""
     norms = {
         "Resp Rate":  min(vitals.get("respiratory_rate",  18) / 30, 1.0),
-        "SpO₂":       vitals.get("oxygen_saturation",     98) / 100,
+        "SpO2":       vitals.get("oxygen_saturation",     98) / 100,
         "Sys BP":     min(vitals.get("systolic_bp",      120) / 200, 1.0),
         "Heart Rate": min(vitals.get("heart_rate",        80) / 150, 1.0),
         "Temp":       min((vitals.get("temperature",      37) - 35) / 7, 1.0),
     }
-    cats = list(norms.keys()) + [list(norms.keys())[0]]   # close polygon
+    cats = list(norms.keys()) + [list(norms.keys())[0]]
     vals = list(norms.values()) + [list(norms.values())[0]]
 
     fig = go.Figure(go.Scatterpolar(
@@ -108,7 +111,7 @@ def vitals_radar(vitals: dict) -> go.Figure:
 
 def ml_probability_bar(probs: list) -> go.Figure:
     """
-    Bar chart of Keras softmax output probabilities.
+    Bar chart of Keras softmax probabilities.
     probs = [p_High, p_Low, p_Medium]  (alphabetical model output order)
     """
     labels = ["High", "Low", "Medium"]
@@ -133,10 +136,7 @@ def ml_probability_bar(probs: list) -> go.Figure:
 # ── SHAP Feature Importance Bar ───────────────────────────────────────────────
 
 def shap_bar_chart(shap_feats: list) -> go.Figure:
-    """
-    Horizontal bar chart of SHAP feature importances.
-    shap_feats = [(feature_name, importance_value), ...]
-    """
+    """Horizontal bar chart of SHAP feature importances."""
     if not shap_feats:
         return _empty("SHAP explanation not available")
 
